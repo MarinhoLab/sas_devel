@@ -1,9 +1,0 @@
-services:
-  sas_devel:
-    image: murilomarinho/sas:jazzy
-    volumes:
-      - ../:/root/sas_devel/
-    command: /bin/bash -c "
-      cd /root/sas_devel/scripts/
-      && chmod +x setup_environment.sh
-      && ./setup_environment.sh"

@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
+rosv="jazzy"
+
 ####################################################################
 #                        Make src directory
 ####################################################################
 
-mkdir -p src
-cd src
+mkdir -p $HOME/sas_devel/src
+cd $HOME/sas_devel/src
 
 ####################################################################
 #                        Array of packages
@@ -50,6 +52,7 @@ done
 #                        Build and add to source
 ####################################################################
 
+cd ..
 colcon build
 
 echo "source $HOME/sas_devel/install/setup.bash"\

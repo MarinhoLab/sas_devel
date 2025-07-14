@@ -31,22 +31,40 @@ marinholab_pkg_array=(
 "sas_robot_driver_kuka"
 "sas_robot_driver_ur"
 "sas_robot_driver_coppeliasim"
+"sas_operator_side_receiver"
+"sas_patient_side_manager"
 )
 
 ####################################################################
 #                        Clone all packages
 ####################################################################
 
-echo "Cloning packages at SmartArmStack"
+echo "Cloning or pulling repos at SmartArmStack"
 for pkg_name in "${sas_pkg_array[@]}"; do
-  echo "Cloning ${pkg_name}"
-  git clone -b "$rosv" git@github.com:SmartArmStack/"$pkg_name".git --recurse-submodules
+    if [ ! -d "${pkg_name}" ]; then
+        echo "Cloning ${pkg_name}"
+        git clone -b "$rosv" git@github.com:SmartArmStack/"$pkg_name".git --recurse-submodules
+    else
+        echo "Pulling ${pkg_name}"
+        cd "${pkg_name}"
+        git checkout "$rosv"
+        git pull
+        cd ..
+    fi
 done
 
-echo "Cloning packages at MarinhoLab"
+echo "Cloning or pulling repos at MarinhoLab"
 for pkg_name in "${marinholab_pkg_array[@]}"; do
-  echo "Cloning ${pkg_name}"
-  git clone -b "$rosv" git@github.com:MarinhoLab/"$pkg_name".git --recurse-submodules
+    if [ ! -d "${pkg_name}" ]; then
+        echo "Cloning ${pkg_name}"
+        git clone -b "$rosv" git@github.com:MarinhoLab/"$pkg_name".git --recurse-submodules
+    else
+        echo "Pulling ${pkg_name}"
+        cd "${pkg_name}"
+        git checkout "$rosv"
+        git pull
+        cd ..
+    fi
 done
 
 ####################################################################

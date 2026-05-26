@@ -1,48 +1,48 @@
 [submodule "src/sas_core"]
 	path = src/sas_core
-	url = https://github.com/SmartArmStack/sas_core.git
+	url = git@github.com:SmartArmStack/sas_core.git
 	branch = jazzy
 [submodule "src/sas_common"]
 	path = src/sas_common
-	url = https://github.com/SmartArmStack/sas_common.git
+	url = git@github.com:SmartArmStack/sas_common.git
 	branch = jazzy
 [submodule "src/sas_conversions"]
 	path = src/sas_conversions
-	url = https://github.com/SmartArmStack/sas_conversions.git
+	url = git@github.com:SmartArmStack/sas_conversions.git
 	branch = jazzy
 [submodule "src/sas_msgs"]
 	path = src/sas_msgs
-	url = https://github.com/SmartArmStack/sas_msgs.git
+	url = git@github.com:SmartArmStack/sas_msgs.git
 	branch = jazzy
 [submodule "src/sas_datalogger"]
 	path = src/sas_datalogger
-	url = https://github.com/SmartArmStack/sas_datalogger.git
+	url = git@github.com:SmartArmStack/sas_datalogger.git
 	branch = jazzy
 [submodule "src/sas_robot_driver"]
 	path = src/sas_robot_driver
-	url = https://github.com/SmartArmStack/sas_robot_driver.git
+	url = git@github.com:SmartArmStack/sas_robot_driver.git
 	branch = jazzy
 [submodule "src/sas_robot_kinematics"]
 	path = src/sas_robot_kinematics
-	url = https://github.com/SmartArmStack/sas_robot_kinematics.git
+	url = git@github.com:SmartArmStack/sas_robot_kinematics.git
 	branch = jazzy
 [submodule "src/sas_robot_driver_coppeliasim"]
 	path = src/sas_robot_driver_coppeliasim
-	url = https://github.com/MarinhoLab/sas_robot_driver_coppeliasim.git
+	url = git@github.com:MarinhoLab/sas_robot_driver_coppeliasim.git
 	branch = jazzy
 [submodule "src/sas_robot_driver_kuka"]
 	path = src/sas_robot_driver_kuka
-	url = https://github.com/MarinhoLab/sas_robot_driver_kuka.git
+	url = git@github.com:MarinhoLab/sas_robot_driver_kuka.git
 	branch = jazzy
 [submodule "src/sas_robot_driver_ur"]
 	path = src/sas_robot_driver_ur
-	url = https://github.com/MarinhoLab/sas_robot_driver_ur.git
+	url = git@github.com:MarinhoLab/sas_robot_driver_ur.git
 	branch = jazzy
 [submodule "src/sas_robot_driver_gazebo"]
 	path = src/sas_robot_driver_gazebo
-	url = https://github.com/MarinhoLab/sas_robot_driver_gazebo.git
+	url = git@github.com:MarinhoLab/sas_robot_driver_gazebo.git
 	branch = jazzy
 [submodule "src/sas_force_sensor_bota"]
 	path = src/sas_force_sensor_bota
-	url = https://github.com/MarinhoLab/sas_force_sensor_bota.git
+	url = git@github.com:MarinhoLab/sas_force_sensor_bota.git
 	branch = jazzy

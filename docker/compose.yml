@@ -1,0 +1,10 @@
+services:
+  sas_devel:
+    build: .
+    volumes:
+      - ../src:/root/sas_devel/src
+    command: /bin/bash -c "
+      cd /root/sas_devel/src
+      && ls .
+      && colcon build
+      && source install/setup.bash"

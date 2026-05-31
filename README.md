@@ -5,6 +5,8 @@ testing, and deployment of robot control algorithms.
 
 ## Links
 
+See the website below for installation instructions and docker images.
+
 - Website: https://smartarmstack.github.io
 - API documentation: https://marinholab.github.io/sas_devel/index.html
 

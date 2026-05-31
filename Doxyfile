@@ -1130,7 +1130,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which Doxygen is
 # run.
 
-EXCLUDE                = src/sas_robot_driver_ur/src/ur src/sas_robot_driver_kuka/src/kuka src/sas_robot_driver_gazebo/vendor
+EXCLUDE                = src/sas_robot_driver_ur/src src/sas_robot_driver_kuka/src src/sas_robot_driver_kuka/teaching_pendant_app src/sas_robot_driver_gazebo/vendor
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

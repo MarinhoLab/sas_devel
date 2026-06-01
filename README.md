@@ -10,6 +10,11 @@ See the website below for installation instructions and docker images.
 - Website: https://smartarmstack.github.io
 - API documentation: https://marinholab.github.io/sas_devel/index.html
 
+## Issues
+
+For bug reports or issues in any of the packages, please use the following GitHub issue tracker:
+- https://github.com/MarinhoLab/sas_devel/issues
+
 ## Main philosophy
 
 The core philosophy of sas_devel is to separate application logic from ROS 2 communication using a client–server architecture.

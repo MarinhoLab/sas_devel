@@ -48,6 +48,16 @@ Vendor packages provide concrete implementations of the sas_robot_driver interfa
 | [sas_robot_driver_coppeliasim](src/sas_robot_driver_coppeliasim/README.md) | Client–server driver implementation for CoppeliaSim simulation.                         |
 | [sas_robot_driver_gazebo](src/sas_robot_driver_gazebo/README.md)           | Client–server driver implementation for Gazebo simulation.                              |
 
+## Templates
+
+Packages to clone as a template and edit to your needs. They include simulation and hardware examples.
+Videos only render on the website or GitHub, not in these doxygen docs.
+
+| Package                                                              | Summary                                                                                 |
+|----------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| [sas_kuka_control_template](src/sas_kuka_control_template/README.md) | Template package for controlling KUKA robots using the sas_robot_driver_kuka interface. |
+| [sas_ur_control_template](src/sas_ur_control_template/README.md)     | Template package for controlling UR robots using the sas_robot_driver_ur interface.     |
+
 ## Base docker images
 
 - `dqrobotics`: https://github.com/dqrobotics/container

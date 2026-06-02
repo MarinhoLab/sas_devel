@@ -24,29 +24,29 @@ same code to run seamlessly across hardware and simulation.
 
 ## Base packages
 
-| Package                                   | Summary                                                                            |
-|-------------------------------------------|------------------------------------------------------------------------------------|
-| sas_core                                  | Core C++ library providing fundamental functionality independent of ROS 2.         |
-| sas_common                                | Shared ROS 2 utilities and helper abstractions used across all packages.           |
-| sas_msgs                                  | Wrapper package providing simplified or legacy-compatible ROS message definitions. |
-| sas_conversions                           | Utilities for converting ROS 2 messages into primitive and DQ Robotics types.      |
-| sas_robot_driver                          | Framework for configuration-space robot control via ROS 2 client–server nodes.     |
-| sas_robot_kinematics                      | Framework for task-space (kinematic-level) robot monitoring and control.           |
-| sas_datalogger                            | Tools for logging and recording system data during experiments or execution.       |
-| sas_operator_side_receiver                | Receives operator-side input data and exposes it as ROS 2 interfaces.              |
-| sas_patient_side_manager                  | Coordinates teleoperation by linking operator inputs with multiple robots.         |
-| sas_robot_kinematics_constrained_multiarm | Provides centralized kinematic control for multiple robots with constraints.       |
+| Package                                                    | Summary                                                                            |
+|------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [sas_core](src/sas_core/README.md)                         | Core C++ library providing fundamental functionality independent of ROS 2.         |
+| [sas_common](src/sas_common/README.md)                     | Shared ROS 2 utilities and helper abstractions used across all packages.           |
+| [sas_msgs](src/sas_msgs/README.md)                         | Wrapper package providing simplified or legacy-compatible ROS message definitions. |
+| [sas_conversions](src/sas_conversions/README.md)           | Utilities for converting ROS 2 messages into primitive and DQ Robotics types.      |
+| [sas_robot_driver](src/sas_robot_driver/README.md)         | Framework for configuration-space robot control via ROS 2 client–server nodes.     |
+| [sas_robot_kinematics](src/sas_robot_kinematics/README.md) | Framework for task-space (kinematic-level) robot monitoring and control.           |
+| [sas_datalogger](src/sas_datalogger/README.md)             | Tools for logging and recording system data during experiments or execution.       |
+| sas_operator_side_receiver                                 | Receives operator-side input data and exposes it as ROS 2 interfaces.              |
+| sas_patient_side_manager                                   | Coordinates teleoperation by linking operator inputs with multiple robots.         |
+| sas_robot_kinematics_constrained_multiarm                  | Provides centralized kinematic control for multiple robots with constraints.       |
 
 ## Specialized packages
 
 Vendor packages provide concrete implementations of the sas_robot_driver interface for specific robot manufacturers or simulation environments.
 
-| Package                         | Summary                                                                                 |
-|---------------------------------|-----------------------------------------------------------------------------------------|
-| sas_robot_driver_ur             | Client–server driver implementation for controlling Universal Robots (UR) manipulators. |
-| sas_robot_driver_kuka           | Client–server driver implementation for controlling KUKA robotic manipulators.          |
-| sas_robot_driver_coppeliasim    | Client–server driver implementation for CoppeliaSim simulation.                         |
-| sas_robot_driver_gazebo         | Client–server driver implementation for Gazebo simulation.                              |
+| Package                                                                    | Summary                                                                                 |
+|----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| [sas_robot_driver_ur](src/sas_robot_driver_ur/README.md)                   | Client–server driver implementation for controlling Universal Robots (UR) manipulators. |
+| [sas_robot_driver_kuka](src/sas_robot_driver_kuka/README.md)               | Client–server driver implementation for controlling KUKA robotic manipulators.          |
+| [sas_robot_driver_coppeliasim](src/sas_robot_driver_coppeliasim/README.md) | Client–server driver implementation for CoppeliaSim simulation.                         |
+| [sas_robot_driver_gazebo](src/sas_robot_driver_gazebo/README.md)           | Client–server driver implementation for Gazebo simulation.                              |
 
 ## Base docker images
 

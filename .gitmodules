@@ -46,3 +46,9 @@
 	path = src/sas_force_sensor_bota
 	url = git@github.com:MarinhoLab/sas_force_sensor_bota.git
 	branch = jazzy
+[submodule "src/sas_kuka_control_template"]
+	path = src/sas_kuka_control_template
+	url = git@github.com:MarinhoLab/sas_kuka_control_template.git
+[submodule "src/sas_ur_control_template"]
+	path = src/sas_ur_control_template
+	url = git@github.com:MarinhoLab/sas_ur_control_template.git

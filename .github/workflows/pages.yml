@@ -22,10 +22,13 @@ jobs:
           submodules: true
       - name: Setup Pages
         uses: actions/configure-pages@v3
-      - name: Install doxygen
-        run: sudo apt-get update && sudo apt-get install -y doxygen
+      - name: Download and extract doxygen
+        run: |
+          curl -OL https://www.doxygen.nl/files/doxygen-1.17.0.linux.bin.tar.gz
+          tar -xvzf doxygen-1.17.0.linux.bin.tar.gz
+          ln -s doxygen-1.17.0/bin/doxygen doxygen
       - name: Build HTML Assets
-        run: doxygen
+        run: ./doxygen
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

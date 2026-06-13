@@ -22,6 +22,14 @@ Developers interact through clients and servers, which handle all ROS 2 communi
 eliminating the need to manually create publishers, subscribers, or services. This simplifies development and allows the 
 same code to run seamlessly across hardware and simulation.
 
+### Client--Server
+
+As a rule, each `sas` functionality is available via a public `cpp` header in the relevant package. The user of each
+functionality uses a client or server as applicable. For most client--server pairs, a `pybind11` wrapper allows the
+same functionality in `python`.
+
+Below, each package is listed. For more details, see the `README.md` in each package.
+
 ## Base packages
 
 | Package                                                    | Summary                                                                            |

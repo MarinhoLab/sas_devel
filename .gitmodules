@@ -52,3 +52,7 @@
 [submodule "src/sas_ur_control_template"]
 	path = src/sas_ur_control_template
 	url = git@github.com:MarinhoLab/sas_ur_control_template.git
+[submodule "src/sas_force_sensor"]
+	path = src/sas_force_sensor
+	url = git@github.com:MarinhoLab/sas_force_sensor.git
+    branch = jazzy

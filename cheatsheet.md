@@ -2,6 +2,28 @@
 
 Patterns extracted from the SmartArmStack CMakeLists.txt files across all submodules.
 
+## Submodule Overview
+
+| Package | Owner | Branch | Shared Lib | pybind11 | Messages | Scripts |
+|---|---|---|---|---|---|---|
+| sas_common | SmartArmStack | jazzy | ✅ | ✅ | — | ✅ |
+| sas_conversions | SmartArmStack | jazzy | — | — | — | — |
+| sas_core | SmartArmStack | jazzy | ✅ | ✅ | — | ✅ |
+| sas_datalogger | SmartArmStack | jazzy | ✅ | ✅ | — | ✅ |
+| sas_force_sensor | MarinhoLab | jazzy | ✅ | ✅ | — | ✅ |
+| sas_force_sensor_bota | MarinhoLab | jazzy | — | — | — | — |
+| sas_kuka_control_template | MarinhoLab | main | — | — | — | ✅ |
+| sas_msgs | SmartArmStack | jazzy | — | — | ✅ | — |
+| sas_robot_driver | SmartArmStack | jazzy | ✅ | ✅ | — | ✅ |
+| sas_robot_driver_coppeliasim | MarinhoLab | jazzy | — | — | — | — |
+| sas_robot_driver_gazebo | MarinhoLab | jazzy | ✅ | ✅ | — | — |
+| sas_robot_driver_kuka | MarinhoLab | jazzy | ✅ | — | — | — |
+| sas_robot_driver_ur | MarinhoLab | jazzy | ✅ | — | — | — |
+| sas_robot_kinematics | SmartArmStack | jazzy | ✅ | ✅ | — | ✅ |
+| sas_ur_control_template | MarinhoLab | main | — | — | — | ✅ |
+
+**All submodules:** `cmake_minimum_required(VERSION 3.11)`
+
 ---
 
 ## Project Setup

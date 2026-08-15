@@ -7,7 +7,7 @@ Patterns extracted from the SmartArmStack CMakeLists.txt files across all submod
 ## Project Setup
 
 ```cmake
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.11)
 project(<project_name>)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -17,7 +17,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 ```
 
-Use `VERSION 3.11` when embedding pybind11 as a subdirectory.
+All SAS submodules use **VERSION 3.11** — required for pybind11 embedding and CMake block scope support.
 
 ---
 

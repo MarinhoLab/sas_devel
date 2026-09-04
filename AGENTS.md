@@ -181,6 +181,18 @@ See `cheatsheet.md` for detailed CMake patterns.
 
 A VS Code devcontainer is configured at `.devcontainer/devcontainer.json`, using the Docker Compose setup. It integrates with IntelliJ IDEA backend.
 
+## Running Gazebo Headless
+
+The Gazebo bridge can run without a GPU/display. Verified in Docker (ROS jazzy, arm64):
+
+- **Server only** is the headless mode: `gz sim <world>.sdf -s` (the `-s`/`--server` flag). The GUI path (`gz sim <world>.sdf`, no `-s`) needs a display and aborts with a Qt/xcb error; `--headless-rendering` is *not* what runs the server.
+- The **C++** `sas_object_server_gazebo_node` and `sas_simulator_server_gazebo_node` connect to the `-s` server and publish their topics (`/frame_x/get/pose`, autostart, ...) with no display at all.
+- The **Python** robot bridge (`sas_robot_driver_ros_gazebo.py`) imports `gz.transport13`. That binding is present in `ghcr.io/marinholab/gazebo:jazzy` (installed as `python3-gz-transport13`, in `/usr/lib/python3/dist-packages/gz/`) but **absent** from `ghcr.io/marinholab/sas-full:jazzy`. It is normally added to the Gazebo compose image during the `Dockerfile.Gazebo` `colcon build`.
+- Full headless flow that works end-to-end: `gz sim <world>.sdf -s` + `robot_driver_server_launch.py name:=<node>` + `object_server_launch.py` + `simulator_server_launch.py` (config keyed by ROS node name). The robot then exposes `/ur_1/get/joint_states` etc.
+- UR meshes come from `ros2 run sas_robot_driver_gazebo setup_vendor.sh ur` (clones `Universal_Robots_ROS2_Description` into `~/.sas/.../vendor`); without it the world fails to load with unresolved `model://Universal_Robots_ROS2_Description/...` URIs.
+
+So no Xvfb is required for the simulation; a display (or Xvfb) is only needed if you want the Gazebo GUI.
+
 ## Important Notes
 
 - **sas_core** can be built standalone (non-ROS 2) by setting `ROS2_BUILD=OFF`. Useful for CMake FetchContent in external projects.

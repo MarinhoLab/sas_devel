@@ -1,0 +1,22 @@
+# The build context (repo root) is copied into the image via
+# `COPY . /root/sas_devel/src/` in docker/Dockerfile.
+# Keep only the package sources out of the image.
+.git
+.gitmodules
+.github
+.devcontainer
+docker
+docs
+AGENTS.md
+cheatsheet.md
+Doxyfile
+*.md
+
+# Submodule checkouts are already packages (keep them).
+# Ignore nested VCS and build artifacts inside them.
+**/.git
+**/build/
+**/install/
+**/log/
+**/__pycache__/
+*.pyc

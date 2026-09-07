@@ -1,8 +1,8 @@
 services:
   sas_devel:
-    build: .
-    volumes:
-      - ../src:/root/sas_devel/src
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     command: /bin/bash -c "
       cd /root/sas_devel
       && ls .

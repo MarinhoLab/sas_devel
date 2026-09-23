@@ -56,3 +56,9 @@
 	path = src/sas_force_sensor
 	url = https://github.com/MarinhoLab/sas_force_sensor.git
     branch = jazzy
+[submodule "sas_cpp"]
+	path = sas_cpp
+	url = git@github.com:MarinhoLab/sas_cpp.git
+[submodule "sas_py"]
+	path = sas_py
+	url = git@github.com:MarinhoLab/sas_py.git

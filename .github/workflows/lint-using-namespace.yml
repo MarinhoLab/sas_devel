@@ -2,6 +2,9 @@ name: Lint using-namespace
 
 on: [push, pull_request, workflow_dispatch]
 
+permissions:
+  contents: read
+
 jobs:
   check_using_namespace:
     name: No 'using namespace Eigen/rclcpp' in headers

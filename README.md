@@ -9,6 +9,7 @@ See the website below for installation instructions and docker images.
 
 - Website: https://smartarmstack.github.io
 - API documentation: https://marinholab.github.io/sas_devel/index.html
+- Agent/AI documentation (repository guide, CMake patterns, per-package agent notes): https://marinholab.github.io/sas_devel/agents/
 
 ## Issues
 

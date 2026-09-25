@@ -1,15 +1,3 @@
-name: pages.yml
-on: [push, workflow_dispatch]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: 'pages'
-  cancel-in-progress: false
-
 jobs:
   deploy:
     environment:
@@ -29,6 +17,8 @@ jobs:
           ln -s doxygen-1.17.0/bin/doxygen doxygen
       - name: Build HTML Assets
         run: ./doxygen
+      - name: Build agent documentation
+        run: ./doxygen Doxyfile.agents
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -36,4 +26,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

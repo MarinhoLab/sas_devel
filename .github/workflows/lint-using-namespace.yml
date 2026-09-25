@@ -1,0 +1,16 @@
+name: Lint using-namespace
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  check_using_namespace:
+    name: No 'using namespace Eigen/rclcpp' in headers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Run guardrail
+        run: bash scripts/check_using_namespace.sh

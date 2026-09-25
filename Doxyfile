@@ -349,7 +349,8 @@ OPTIMIZE_OUTPUT_SLICE  = NO
 #
 # Note see also the list of default file extension mappings.
 
-EXTENSION_MAPPING      =
+# Map the sas_py Python stub to the Python parser so its docstrings are used.
+EXTENSION_MAPPING      = pyi=python
 
 # If the MARKDOWN_SUPPORT tag is enabled then Doxygen pre-processes all comments
 # according to the Markdown format, which allows for more readable
@@ -1026,7 +1027,12 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = README.md src
+# src/ holds the ROS 2 packages; sas_cpp is the non-ROS C++ core
+# (libmarinholab-sas-core); sas_py/marinholab is the Python API. The
+# _core.pyi stub is listed explicitly because a recursive scan of the
+# directory skips it (a module of the same name exists as a .py file),
+# and EXTENSION_MAPPING maps it to the Python parser.
+INPUT                  = README.md src sas_cpp sas_py/marinholab sas_py/marinholab/sas/core/_core.pyi
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. Internally Doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1146,7 +1152,9 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */pybind11/* */tests/*
+# */AGENTS.md keeps the per-package agent guides out of the human-facing
+# build; they are documented by Doxyfile.agents under the /agents/ section.
+EXCLUDE_PATTERNS       = */pybind11/* */tests/* */AGENTS.md
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the

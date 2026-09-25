@@ -35,6 +35,8 @@ Below, each package is listed. For more details, see the `README.md` in each pac
 
 | Package                                                    | Summary                                                                            |
 |------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [sas_cpp](sas_cpp/README.md)                               | ROS-free C++ core of the SmartArmStack (pure-C++ part of sas_core).                |
+| [sas_py](sas_py/README.md)                                 | Python (pybind11) bindings for the ROS-free C++ core (marinholab.sas.core).        |
 | [sas_core](src/sas_core/README.md)                         | Core C++ library providing fundamental functionality independent of ROS 2.         |
 | [sas_common](src/sas_common/README.md)                     | Shared ROS 2 utilities and helper abstractions used across all packages.           |
 | [sas_msgs](src/sas_msgs/README.md)                         | Wrapper package providing simplified or legacy-compatible ROS message definitions. |

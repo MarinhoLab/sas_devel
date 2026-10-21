@@ -25,6 +25,7 @@ HTML_OUTPUT            = html/agents
 INPUT                  = AGENTS.md \
                          cheatsheet.md \
                          src/sas_robot_driver/AGENTS.md \
+                         src/sas_robot_driver_brov2/AGENTS.md \
                          src/sas_robot_driver_gazebo/convert/AGENTS.md
 
 MARKDOWN_SUPPORT       = YES

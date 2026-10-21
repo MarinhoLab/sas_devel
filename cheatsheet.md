@@ -15,6 +15,7 @@ Patterns extracted from the SmartArmStack CMakeLists.txt files across all submod
 | sas_kuka_control_template | MarinhoLab | main | — | — | — | ✅ |
 | sas_msgs | SmartArmStack | jazzy | — | — | ✅ | — |
 | sas_robot_driver | SmartArmStack | jazzy | ✅ | ✅ | — | ✅ |
+| sas_robot_driver_brov2 | MarinhoLab | jazzy | — | — | — | — |
 | sas_robot_driver_coppeliasim | MarinhoLab | jazzy | — | — | — | — |
 | sas_robot_driver_gazebo | MarinhoLab | jazzy | ✅ | ✅ | — | — |
 | sas_robot_driver_kuka | MarinhoLab | jazzy | ✅ | — | — | — |

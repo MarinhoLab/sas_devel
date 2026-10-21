@@ -32,6 +32,7 @@ sas_devel/
 │   ├── sas_robot_driver_kuka/       # KUKA driver
 │   ├── sas_robot_driver_coppeliasim/ # CoppeliaSim simulation driver
 │   ├── sas_robot_driver_gazebo/      # Gazebo simulation driver
+│   ├── sas_robot_driver_brov2/       # BlueROV2 underwater vehicle driver
 │   ├── sas_kuka_control_template/    # KUKA control template (clone & modify)
 │   └── sas_ur_control_template/      # UR control template (clone & modify)
 ```
@@ -125,9 +126,10 @@ The recommended build order (topological):
 10. `sas_robot_driver_kuka` — depends on sas_common, sas_core, sas_robot_driver
 11. `sas_robot_driver_gazebo` — depends on sas_common, sas_core, sas_robot_driver
 12. `sas_robot_driver_coppeliasim` — depends on sas_common, sas_core, sas_robot_driver
-13. `sas_force_sensor_bota` — depends on sas_core (ament_python)
-14. `sas_kuka_control_template` — depends on sas_robot_driver_kuka
-15. `sas_ur_control_template` — depends on sas_robot_driver, sas_robot_driver_ur
+13. `sas_robot_driver_brov2` — depends on sas_common, sas_core, sas_robot_driver (plus mavros_msgs, realtime_tools)
+14. `sas_force_sensor_bota` — depends on sas_core (ament_python)
+15. `sas_kuka_control_template` — depends on sas_robot_driver_kuka
+16. `sas_ur_control_template` — depends on sas_robot_driver, sas_robot_driver_ur
 
 ## Testing
 

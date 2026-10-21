@@ -58,6 +58,7 @@ Vendor packages provide concrete implementations of the sas_robot_driver interfa
 | [sas_robot_driver_kuka](src/sas_robot_driver_kuka/README.md)               | Client–server driver implementation for controlling KUKA robotic manipulators.          |
 | [sas_robot_driver_coppeliasim](src/sas_robot_driver_coppeliasim/README.md) | Client–server driver implementation for CoppeliaSim simulation.                         |
 | [sas_robot_driver_gazebo](src/sas_robot_driver_gazebo/README.md)           | Client–server driver implementation for Gazebo simulation.                              |
+| [sas_robot_driver_brov2](src/sas_robot_driver_brov2/README.md)             | Client–server driver implementation for the BlueROV2 underwater vehicle.                |
 
 ## Templates
 

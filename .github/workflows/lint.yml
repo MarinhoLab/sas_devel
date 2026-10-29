@@ -77,3 +77,9 @@ jobs:
           source /opt/ros/jazzy/setup.bash
           source /tmp/sas_devel/ros2_ws/install/setup.bash
           scripts/lint.sh types
+
+      - name: Lint ROS 2 conventions (murilos_ros2_linter)
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/sas_devel/ros2_ws/install/setup.bash
+          scripts/lint.sh ros2

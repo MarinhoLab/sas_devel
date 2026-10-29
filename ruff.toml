@@ -18,6 +18,9 @@ extend-exclude = [
     "**/build",
     "**/install",
     "**/log",
+    # Vendored third-party tool, kept byte-faithful to its upstream (see the
+    # SKIP_DIRS LOCAL note inside it).
+    "tools/murilos_ros2_linter.py",
 ]
 
 [lint]

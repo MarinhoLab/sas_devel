@@ -18,6 +18,7 @@ sas_devel/
 ├── .github/workflows/   # CI: build + docs deployment
 ├── src/examples/        # C++ example programs
 ├── scripts/             # Helper scripts (check_using_namespace.sh, lint.sh)
+├── tools/               # Vendored lint tools (murilos_ros2_linter.py)
 ├── src/                 # All ROS 2 packages as submodules
 │   ├── sas_core/                # Core C++ library (no ROS 2 dependency option)
 │   ├── sas_common/              # Shared ROS 2 utilities
@@ -156,6 +157,8 @@ repository root (`.clang-tidy`, `ruff.toml`, `pyrightconfig.json`):
 scripts/lint.sh py     # ruff (style + bugbear) — needs no build
 scripts/lint.sh types  # pyright — full results need a built workspace
 scripts/lint.sh cpp    # clang-tidy — needs the colcon compile database
+scripts/lint.sh ros2   # tools/murilos_ros2_linter.py: spin template, ROS
+                       # naming, package.xml vs imports/entry-points
 scripts/lint.sh all
 ```
 
@@ -169,7 +172,9 @@ source install/setup.bash   # puts built bindings on PYTHONPATH for pyright
 
 CI: `.github/workflows/lint.yml` runs a fast ruff job plus a container job
 (same image as `docker/`) that builds the workspace once and runs
-clang-tidy and pyright. Both jobs are currently non-blocking
+clang-tidy, pyright and `tools/murilos_ros2_linter.py` (vendored from
+mmmarinho/ROS2_Tutorial; keep its `SKIP_DIRS` LOCAL line in sync with the
+ruff/pyright vendor exclusions). Both jobs are currently non-blocking
 (`continue-on-error`) until the pre-existing findings are cleaned up;
 new code is expected lint-clean.
 

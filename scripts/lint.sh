@@ -6,7 +6,7 @@
 #
 # Usage:
 #   scripts/lint.sh [MODE]
-#     MODE: all (default) | cpp | py | types
+#     MODE: all (default) | cpp | py | types | ros2
 #       cpp   clang-tidy over the C++ sources in the compile database
 #       py    ruff (style + bugbear; import-resolution independent)
 #       types pyright. Full results need the compiled pybind11 bindings and
@@ -14,6 +14,10 @@
 #             docker image after `colcon build` and `source install/setup.bash`
 #             (outside that environment missing imports degrade to warnings
 #             and unknown extension symbols to errors).
+#       ros2  tools/murilos_ros2_linter.py over src/ (spin/shutdown template,
+#             ROS naming, package.xml vs imports/entry-points). Quietest in
+#             the ROS container with the workspace sourced: installed
+#             packages then count as declared dependencies.
 #
 # C++ linting needs a colcon compile database. Generate one with:
 #   colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -28,6 +32,7 @@
 #   PYRIGHT      pyright command            (default: pyright, falls back to "uvx pyright")
 #   COMPILE_DB   directory holding compile_commands.json (default: <ROOT>/build)
 #   PARALLEL     clang-tidy job count       (default: number of CPUs)
+#   ROS2_LINTER  murilos_ros2_linter.py path (default: <ROOT>/tools/)
 #
 # Exit codes:
 #   0  no findings
@@ -43,7 +48,7 @@ FAIL=0
 
 die() { echo "ERROR: $*" >&2; exit 2; }
 
-case "$MODE" in all|cpp|py|types) ;; *) die "unknown MODE '$MODE' (use: all|cpp|py|types)";; esac
+case "$MODE" in all|cpp|py|types|ros2) ;; *) die "unknown MODE '$MODE' (use: all|cpp|py|types|ros2)";; esac
 
 nproc_or() {
     command -v nproc >/dev/null 2>&1 && { nproc; return; }
@@ -177,11 +182,19 @@ lint_types() {
     $pyright || FAIL=1
 }
 
+lint_ros2() {
+    local linter="${ROS2_LINTER:-$ROOT/tools/murilos_ros2_linter.py}"
+    [ -f "$linter" ] || die "murilos_ros2_linter.py not found at $linter (set ROS2_LINTER=)"
+    echo "=== murilos_ros2_linter (ROS 2 conventions over src/) ==="
+    python3 "$linter" "$ROOT/src" || FAIL=1
+}
+
 cd "$ROOT" || die "repository root $ROOT does not exist"
 case "$MODE" in
     cpp)   lint_cpp ;;
     py)    lint_py ;;
     types) lint_types ;;
-    all)   lint_cpp; lint_py; lint_types ;;
+    ros2)  lint_ros2 ;;
+    all)   lint_cpp; lint_py; lint_types; lint_ros2 ;;
 esac
 exit "$FAIL"

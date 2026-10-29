@@ -53,6 +53,9 @@ jobs:
           sudo pip install pyright bota-driver --break-system-packages
           sudo pip install --no-deps dqrobotics --break-system-packages
           sudo pip install pyqtdarktheme==2.1.0 --ignore-requires-python --break-system-packages
+          # scipy: needed by the sas_datalogger tests (loadmat round-trip);
+          # rosdep skips python3-scipy (universe package, see below).
+          sudo pip install scipy --break-system-packages
 
       # Mirror docker/Dockerfile so the packages actually compile
       # (clang-tidy needs a real compile database and pyright the built
@@ -103,6 +106,18 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/src" /tmp/sas_devel/ros2_ws/src
           cd /tmp/sas_devel/ros2_ws
           colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      # Scoped to the packages with maintained in-process test suites; the
+      # other four (sas_conversions, brov2, coppeliasim, ur_control_template)
+      # still carry hardware/bring-up gtests that fail without a robot.
+      - name: Test workspace (colcon test)
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          cd /tmp/sas_devel/ros2_ws
+          source install/setup.bash
+          colcon test --packages-select sas_common sas_robot_driver \
+            sas_datalogger sas_force_sensor sas_force_sensor_bota
+          colcon test-result --verbose
 
       - name: Lint C++ (clang-tidy)
         env:

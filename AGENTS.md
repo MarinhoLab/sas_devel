@@ -134,6 +134,20 @@ The recommended build order (topological):
 
 ## Testing
 
+### Unit tests (in-process client/server round-trips)
+
+`colcon test` gates run in CI (`.github/workflows/lint.yml` → "Test
+workspace") for the packages with maintained in-process suites:
+`sas_common`, `sas_robot_driver`, `sas_datalogger`, `sas_force_sensor`,
+`sas_force_sensor_bota`. They drive the pybind11 clients and servers
+against each other over DDS in one process (pytest via
+`ament_cmake_pytest`, plus a gtest suite in `sas_common`); the C++
+peers need `rclcpp_init()` in addition to `rclpy.init()`, and getters
+that report "uninitialized" must be polled while the counterpart keeps
+publishing (volatile QoS drops pre-match messages). The other packages
+only carry hardware/bring-up tests and are deliberately not in the CI
+test step.
+
 ### Lint Tests (ament_lint_auto)
 
 Packages with lint auto-testing:

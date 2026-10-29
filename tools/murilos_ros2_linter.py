@@ -128,7 +128,7 @@ TOPIC_NAME_FUNCS = {"create_publisher", "create_subscription",
                     "create_service", "create_client"}
 SKIP_DIRS = {"install", "build", "log", "__pycache__", ".venv",
              ".git", ".idea", "node_modules",
-             "vendor", ".devcontainer",
+             "vendor", ".devcontainer", "pybind11",
              "Universal_Robots_Client_Library"}  # LOCAL (sas_devel): mirror
              # the vendor exclusions of ruff.toml/pyrightconfig.json
 EXCEPTIONS = ("KeyboardInterrupt", "ExternalShutdownException")

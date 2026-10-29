@@ -42,9 +42,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y clang-tidy
-          # bota-driver: the PyPI dependency sas_force_sensor_bota installs
-          # via requirements.txt, so its import is not flagged as undeclared.
+          # bota-driver/dqrobotics/pyqtdarktheme: the PyPI dependencies the
+          # packages declare in their requirements.txt (no rosdep keys; the
+          # C++ dqrobotics comes from the SmartArmStack PPA as
+          # libdqrobotics-dev), so their imports are not flagged undeclared.
           sudo pip install pyright bota-driver --break-system-packages
+          sudo pip install --no-deps dqrobotics --break-system-packages
+          sudo pip install pyqtdarktheme==2.1.0 --ignore-requires-python --break-system-packages
 
       # Mirror docker/Dockerfile so the packages actually compile
       # (clang-tidy needs a real compile database and pyright the built

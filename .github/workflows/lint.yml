@@ -9,10 +9,6 @@ jobs:
   python:
     name: Python lint (ruff)
     runs-on: ubuntu-latest
-    # ruff currently reports ~200 style findings (import order, whitespace,
-    # pyupgrade) across the submodules; flip this to false once the tree is
-    # clean.
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,10 +30,10 @@ jobs:
     defaults:
       run:
         shell: bash
-    # clang-tidy and pyright findings are reported but do not fail the
-    # pipeline yet; flip this to false (and consider WarningsAsErrors in
-    # .clang-tidy) once the tree is clean.
-    continue-on-error: true
+    # The three lint steps below carry continue-on-error (findings are
+    # reported but do not fail the pipeline yet — consider
+    # WarningsAsErrors in .clang-tidy once the tree is clean); build and
+    # setup steps stay hard so real breakage surfaces.
     timeout-minutes: 60
     steps:
       - name: Checkout
@@ -110,17 +106,20 @@ jobs:
           colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Lint C++ (clang-tidy)
+        continue-on-error: true
         env:
           COMPILE_DB: /tmp/sas_devel/ros2_ws/build
         run: scripts/lint.sh cpp
 
       - name: Type-check Python (pyright)
+        continue-on-error: true
         run: |
           source /opt/ros/jazzy/setup.bash
           source /tmp/sas_devel/ros2_ws/install/setup.bash
           scripts/lint.sh types
 
       - name: Lint ROS 2 conventions (murilos_ros2_linter)
+        continue-on-error: true
         run: |
           source /opt/ros/jazzy/setup.bash
           source /tmp/sas_devel/ros2_ws/install/setup.bash

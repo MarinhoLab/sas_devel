@@ -1,0 +1,79 @@
+name: Lint
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python lint (ruff)
+    runs-on: ubuntu-latest
+    # ruff currently reports ~200 style findings (import order, whitespace,
+    # pyupgrade) across the submodules; flip this to false once the tree is
+    # clean.
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Lint
+        run: scripts/lint.sh py
+
+  workspace:
+    name: Workspace lint (clang-tidy + pyright)
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/marinholab/gazebo:jazzy
+    # clang-tidy and pyright findings are reported but do not fail the
+    # pipeline yet; flip this to false (and consider WarningsAsErrors in
+    # .clang-tidy) once the tree is clean.
+    continue-on-error: true
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install lint tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-tidy
+          sudo pip install pyright --break-system-packages
+
+      # Mirror docker/Dockerfile so the packages actually compile
+      # (clang-tidy needs a real compile database and pyright the built
+      # pybind11 bindings).
+      - name: Install sas_cpp (deb) and sas_py (pip)
+        run: |
+          sudo apt-get install -y dh-make devscripts
+          mkdir -p /tmp/sas_devel/ros2_ws
+          cp -a sas_cpp /tmp/sas_devel/sas_cpp
+          cd /tmp/sas_devel/sas_cpp
+          bash tools/bump-changelog.sh
+          dpkg-buildpackage -us -uc -b
+          cd ..
+          sudo dpkg -i ./libmarinholab-sas-core_*.deb
+          cp -a "$GITHUB_WORKSPACE/sas_py" /tmp/sas_devel/sas_py
+          cd /tmp/sas_devel/sas_py
+          sudo pip install . --break-system-packages
+
+      - name: Build workspace with compile database
+        run: |
+          ln -s "$GITHUB_WORKSPACE/src" /tmp/sas_devel/ros2_ws/src
+          cd /tmp/sas_devel/ros2_ws
+          colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Lint C++ (clang-tidy)
+        env:
+          COMPILE_DB: /tmp/sas_devel/ros2_ws/build
+        run: scripts/lint.sh cpp
+
+      - name: Type-check Python (pyright)
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/sas_devel/ros2_ws/install/setup.bash
+          scripts/lint.sh types

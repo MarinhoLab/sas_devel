@@ -1,0 +1,45 @@
+# SmartArmStack Python lint configuration (ruff).
+#
+# Run via:  scripts/lint.sh py
+# Starter rule set (pyflakes + pycodestyle-error + isort + bugbear + pyupgrade);
+# expand `select` over time rather than adding per-line noqa comments.
+
+line-length = 100
+target-version = "py310"
+
+extend-exclude = [
+    "docs",
+    "sas_py/stubs",
+    "**/pybind11",
+    "**/Universal_Robots_Client_Library",
+    "**/third_party",
+    "**/vendor",
+    "**/.devcontainer",
+    "**/build",
+    "**/install",
+    "**/log",
+]
+
+[lint]
+select = ["E4", "E7", "E9", "F", "W", "I", "UP", "B"]
+ignore = [
+    "E741",  # ambiguous names (l, O, I) are common in robotics math code
+    # `from dqrobotics import *` (DQ, Vector3, E_, ...) is the established
+    # idiom across the workspace; F821 still catches genuine undefined names.
+    "F403",
+    "F405",
+]
+
+[lint.per-file-ignores]
+# Re-exports in package __init__ files.
+"__init__.py" = ["F401"]
+# ROS convention: launch files and node scripts import after sys.path /
+# rclpy initialisation shims.
+"**/launch/*" = ["E402"]
+"**/scripts/*" = ["E402"]
+
+[lint.isort]
+known-first-party = ["marinholab"]
+
+[format]
+quote-style = "double"

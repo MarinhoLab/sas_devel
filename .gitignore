@@ -1,0 +1,4 @@
+# colcon / lint artifacts (scripts/lint.sh expects the compile database here)
+build/
+install/
+log/

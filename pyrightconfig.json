@@ -1,0 +1,46 @@
+{
+    "typeCheckingMode": "standard",
+    "pythonVersion": "3.10",
+    "include": [
+        "src",
+        "sas_py"
+    ],
+    "exclude": [
+        "**/pybind11/**",
+        "**/Universal_Robots_Client_Library/**",
+        "**/third_party/**",
+        "**/vendor/**",
+        "**/.devcontainer/**",
+        "**/build/**",
+        "**/install/**",
+        "**/log/**",
+        "**/example*.py",
+        "docs/**",
+        "sas_py/stubs/**"
+    ],
+    // Colcon workspace packages must be listed here so `import <pkg>`
+    // resolves to src/<pkg>/<pkg>/ instead of shadowing src/<pkg>/ as a
+    // namespace package. Add an entry when a new src/ submodule lands.
+    "extraPaths": [
+        "src/sas_common",
+        "src/sas_conversions",
+        "src/sas_core",
+        "src/sas_datalogger",
+        "src/sas_force_sensor",
+        "src/sas_force_sensor_bota",
+        "src/sas_kuka_control_template",
+        "src/sas_msgs",
+        "src/sas_robot_driver",
+        "src/sas_robot_driver_brov2",
+        "src/sas_robot_driver_coppeliasim",
+        "src/sas_robot_driver_gazebo",
+        "src/sas_robot_driver_kuka",
+        "src/sas_robot_driver_ur",
+        "src/sas_robot_kinematics",
+        "src/sas_ur_control_template",
+        "sas_py"
+    ],
+    "stubPath": "sas_py/stubs",
+    "reportMissingImports": "warning",
+    "reportMissingModuleSource": "warning"
+}

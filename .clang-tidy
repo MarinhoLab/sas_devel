@@ -1,0 +1,46 @@
+# SmartArmStack C++ lint configuration (clang-tidy).
+#
+# Run via:  scripts/lint.sh cpp   (needs a colcon compile database; see the
+# script header). CI pins clang-tidy 18 (Ubuntu 24.04): never *enable* a
+# check newer than that by name; trailing '-' exemptions for newer checks
+# are fine (unmatched negative names are ignored).
+#
+# Strategy: correctness/performance/modernisation check groups are on; the
+# exemptions below are the pragmatic starting set for gradual adoption on an
+# existing codebase. Prefer tightening this list over silencing individual
+# lines; only add WarningsAsErrors once the tree is clean.
+
+Checks: >
+  bugprone-*,
+  performance-*,
+  modernize-*,
+  readability-*,
+  cppcoreguidelines-*,
+  misc-*,
+  google-build-using-namespace,
+  -bugprone-exception-escape,
+  -modernize-use-trailing-return-type,
+  -modernize-avoid-c-arrays,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-implicit-bool-conversion,
+  -readability-named-parameter,
+  -readability-braces-around-statements,
+  -readability-function-cognitive-complexity,
+  -readability-uppercase-literal-suffix,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-special-member-functions,
+  -misc-include-cleaner,
+  -misc-non-private-member-variables-in-classes,
+  -misc-use-anonymous-namespace
+
+# Only emit diagnostics for our own headers (translation units are selected
+# by scripts/lint.sh, which already prunes pybind11/ and
+# Universal_Robots_Client_Library/; this regex additionally hides
+# diagnostics inside Eigen, dqrobotics, rclcpp and other system headers).
+HeaderFilterRegex: '(^|/)(src/sas_[A-Za-z0-9_]+|sas_cpp)/(include|src)/'

@@ -17,7 +17,7 @@ sas_devel/
 ├── docker/              # Docker Compose + Dockerfile for containerised builds
 ├── .github/workflows/   # CI: build + docs deployment
 ├── src/examples/        # C++ example programs
-├── scripts/             # Python example scripts
+├── scripts/             # Helper scripts (check_using_namespace.sh, lint.sh)
 ├── src/                 # All ROS 2 packages as submodules
 │   ├── sas_core/                # Core C++ library (no ROS 2 dependency option)
 │   ├── sas_common/              # Shared ROS 2 utilities
@@ -146,6 +146,32 @@ Run with:
 colcon test --packages-select <package_name>
 colcon test-result --all
 ```
+
+### Workspace Lint (clang-tidy / ruff / pyright)
+
+Repository-wide linters driven by `scripts/lint.sh`, configured from the
+repository root (`.clang-tidy`, `ruff.toml`, `pyrightconfig.json`):
+
+```bash
+scripts/lint.sh py     # ruff (style + bugbear) — needs no build
+scripts/lint.sh types  # pyright — full results need a built workspace
+scripts/lint.sh cpp    # clang-tidy — needs the colcon compile database
+scripts/lint.sh all
+```
+
+`cpp` and `types` expect a compile database and the compiled pybind11
+bindings, i.e. run them after (in docker: inside the container):
+
+```bash
+colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+source install/setup.bash   # puts built bindings on PYTHONPATH for pyright
+```
+
+CI: `.github/workflows/lint.yml` runs a fast ruff job plus a container job
+(same image as `docker/`) that builds the workspace once and runs
+clang-tidy and pyright. Both jobs are currently non-blocking
+(`continue-on-error`) until the pre-existing findings are cleaned up;
+new code is expected lint-clean.
 
 ### CI Pipeline
 

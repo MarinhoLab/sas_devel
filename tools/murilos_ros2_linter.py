@@ -116,6 +116,7 @@ Test: ``python3 test_murilos_ros2_linter.py``
 
 import argparse
 import ast
+import importlib.util
 import os
 import re
 import sys
@@ -677,6 +678,16 @@ def _ament_installed():
     return names
 
 
+def _pip_installed(mod: str) -> bool:
+    """LOCAL (sas_devel): pip-installed modules (e.g. bota-driver from PyPI,
+    the route this workspace's requirements.txt takes) are valid runtime
+    dependencies the AMENT_PREFIX_PATH scan above cannot see."""
+    try:
+        return importlib.util.find_spec(mod) is not None
+    except (ImportError, ValueError, ModuleNotFoundError):
+        return False
+
+
 def lint_package(pkg_dir: Path):
     """ROS 2 package structure checks (package.xml vs folder, setup.py
     console_scripts vs modules, resource marker). Importable so scripts can
@@ -803,6 +814,7 @@ def lint_package(pkg_dir: Path):
                              f"python3-{top.replace('_', '-').lower()}"}
                 if (top in sys.stdlib_module_names or top == name
                         or dep_names & declared or top in installed
+                        or _pip_installed(top)
                         or (pkg_dir / top).exists()
                         or (pkg_dir / (top + ".py")).exists()):
                     continue

@@ -173,8 +173,9 @@ source install/setup.bash   # puts built bindings on PYTHONPATH for pyright
 CI: `.github/workflows/lint.yml` runs a fast ruff job plus a container job
 (same image as `docker/`) that builds the workspace once and runs
 clang-tidy, pyright and `tools/murilos_ros2_linter.py` (vendored from
-mmmarinho/ROS2_Tutorial; keep its `SKIP_DIRS` LOCAL line in sync with the
-ruff/pyright vendor exclusions). Both jobs are currently non-blocking
+mmmarinho/ROS2_Tutorial; keep its `LOCAL` blocks — vendored-tree skips and
+pip/rosdep dependency recognition — in sync with the ruff/pyright policies).
+Both jobs are currently non-blocking
 (`continue-on-error`) until the pre-existing findings are cleaned up;
 new code is expected lint-clean.
 

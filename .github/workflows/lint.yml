@@ -42,7 +42,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y clang-tidy
-          sudo pip install pyright --break-system-packages
+          # bota-driver: the PyPI dependency sas_force_sensor_bota installs
+          # via requirements.txt, so its import is not flagged as undeclared.
+          sudo pip install pyright bota-driver --break-system-packages
 
       # Mirror docker/Dockerfile so the packages actually compile
       # (clang-tidy needs a real compile database and pyright the built

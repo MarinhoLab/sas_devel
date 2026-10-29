@@ -19,6 +19,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install ruff
+        run: pipx install ruff
+
       - name: Lint
         run: scripts/lint.sh py
 
@@ -95,6 +98,9 @@ jobs:
 
       - name: Build workspace with compile database
         run: |
+          # The image's BASH_ENV auto-source trick does not survive the
+          # runner's step shell, so source ROS explicitly.
+          source /opt/ros/jazzy/setup.bash
           ln -s "$GITHUB_WORKSPACE/src" /tmp/sas_devel/ros2_ws/src
           cd /tmp/sas_devel/ros2_ws
           colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON

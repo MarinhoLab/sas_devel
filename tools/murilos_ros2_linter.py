@@ -796,8 +796,13 @@ def lint_package(pkg_dir: Path):
                            and _is_node_subclass(n)
                            for n in ast.walk(tree))
             for top in sorted(tops):
+                # LOCAL (sas_devel): pip Python dependencies are declared
+                # with their rosdep keys (python3-numpy for `import numpy`),
+                # which the exact-name match above would flag as undeclared.
+                dep_names = {top, f"python3-{top}",
+                             f"python3-{top.replace('_', '-').lower()}"}
                 if (top in sys.stdlib_module_names or top == name
-                        or top in declared or top in installed
+                        or dep_names & declared or top in installed
                         or (pkg_dir / top).exists()
                         or (pkg_dir / (top + ".py")).exists()):
                     continue

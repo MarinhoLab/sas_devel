@@ -30,6 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/marinholab/gazebo:jazzy
+    # GH container jobs default to sh, where `source` does not exist.
+    defaults:
+      run:
+        shell: bash
     # clang-tidy and pyright findings are reported but do not fail the
     # pipeline yet; flip this to false (and consider WarningsAsErrors in
     # .clang-tidy) once the tree is clean.

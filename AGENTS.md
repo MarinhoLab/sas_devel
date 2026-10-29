@@ -170,14 +170,14 @@ colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 source install/setup.bash   # puts built bindings on PYTHONPATH for pyright
 ```
 
-CI: `.github/workflows/lint.yml` runs a fast ruff job (blocking) plus a
+CI: `.github/workflows/lint.yml` runs a fast ruff job plus a
 container job (same image as `docker/`) that builds the workspace once
-(blocking) and runs clang-tidy, pyright and
+and runs clang-tidy, pyright and
 `tools/murilos_ros2_linter.py` (vendored from mmmarinho/ROS2_Tutorial; keep
 its `LOCAL` blocks — vendored-tree skips and pip/rosdep dependency
-recognition — in sync with the ruff/pyright policies). The three lint steps
-are step-level `continue-on-error` until the pre-existing findings are
-cleaned up; new code is expected lint-clean.
+recognition — in sync with the ruff/pyright policies). All lint steps are
+hard gates; the tree is lint-clean (0 findings), so keep new code
+lint-clean.
 
 ### CI Pipeline
 

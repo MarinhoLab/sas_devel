@@ -30,10 +30,9 @@ jobs:
     defaults:
       run:
         shell: bash
-    # The three lint steps below carry continue-on-error (findings are
-    # reported but do not fail the pipeline yet — consider
-    # WarningsAsErrors in .clang-tidy once the tree is clean); build and
-    # setup steps stay hard so real breakage surfaces.
+    # All lint steps are hard gates; the tree is lint-clean (0 findings
+    # as of 2026-10-29). Re-introduce step-level continue-on-error only
+    # when triaging a new tool or rule.
     timeout-minutes: 60
     steps:
       - name: Checkout
@@ -106,20 +105,17 @@ jobs:
           colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Lint C++ (clang-tidy)
-        continue-on-error: true
         env:
           COMPILE_DB: /tmp/sas_devel/ros2_ws/build
         run: scripts/lint.sh cpp
 
       - name: Type-check Python (pyright)
-        continue-on-error: true
         run: |
           source /opt/ros/jazzy/setup.bash
           source /tmp/sas_devel/ros2_ws/install/setup.bash
           scripts/lint.sh types
 
       - name: Lint ROS 2 conventions (murilos_ros2_linter)
-        continue-on-error: true
         run: |
           source /opt/ros/jazzy/setup.bash
           source /tmp/sas_devel/ros2_ws/install/setup.bash

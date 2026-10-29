@@ -41,7 +41,9 @@ jobs:
       - name: Install lint tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-tidy
+          # nodejs: the pip pyright needs a node runtime; the distro one
+          # avoids nodeenv trying to download node at run time.
+          sudo apt-get install -y clang-tidy nodejs
           # bota-driver/dqrobotics/pyqtdarktheme: the PyPI dependencies the
           # packages declare in their requirements.txt (no rosdep keys; the
           # C++ dqrobotics comes from the SmartArmStack PPA as
@@ -66,6 +68,30 @@ jobs:
           cp -a "$GITHUB_WORKSPACE/sas_py" /tmp/sas_devel/sas_py
           cd /tmp/sas_devel/sas_py
           sudo pip install . --break-system-packages
+
+      - name: Install workspace dependencies
+        run: |
+          sudo rosdep init 2>/dev/null || true
+          # Refresh apt lists: the image's can predate newer releases
+          # (e.g. ros-jazzy-mavros-msgs) that the explicit installs below
+          # pull.
+          sudo apt-get update
+          # The image's bundled rosdep is old and its cache loader is
+          # flaky for released-package keys (it can exit 0 with an index
+          # the resolver then cannot see), so treat this as best-effort
+          # (most keys resolve, and it must run under sudo like update)
+          # and install brov2's heavier ROS deps explicitly below.
+          # libmarinholab-sas-core is a non-rosdep key (installed as a .deb
+          # above, from the SmartArmStack builder); python3-pyqt6 /
+          # python3-pyqtgraph / python3-scipy are Ubuntu universe packages
+          # absent from the image's apt sources, and the workspace provides
+          # them via pip (requirements.txt / docker/install.sh) anyway.
+          sudo rosdep update > /dev/null 2>&1 || true
+          sudo rosdep install --from-paths src --ignore-src -r \
+            --skip-keys "libmarinholab-sas-core python3-pyqt6 python3-pyqtgraph python3-scipy" \
+            || echo "::warning::rosdep install incomplete; relying on explicit installs"
+          # brov2's ROS deps that flaky rosdep runs reliably miss.
+          sudo apt-get install -y ros-jazzy-mavros-msgs ros-jazzy-realtime-tools
 
       - name: Build workspace with compile database
         run: |

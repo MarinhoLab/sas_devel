@@ -120,11 +120,14 @@ jobs:
           colcon test-result --verbose
           # colcon test-result exits 0 when it finds no junit files at all,
           # so a deleted/renamed suite would pass vacuously; require that
-          # every package in the gate actually produced results.
+          # every package in the gate actually produced results. (Both
+          # locations matter: ament_cmake writes under build/<pkg>, the
+          # ament_python bota package runs pytest from its source dir.)
           for p in sas_common sas_robot_driver sas_datalogger \
                    sas_force_sensor sas_force_sensor_bota; do
-            find "build/$p/test_results" -name '*.xml' | grep -q . || {
-              echo "::error::no test results produced by $p"; exit 1; }
+            colcon test-result --base-paths "build/$p" "src/$p" 2>/dev/null |
+              grep -q "Summary: [1-9]" || {
+                echo "::error::no test results produced by $p"; exit 1; }
           done
 
       - name: Lint C++ (clang-tidy)

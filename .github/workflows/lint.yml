@@ -21,6 +21,9 @@ jobs:
       - name: Lint
         run: scripts/lint.sh py
 
+      - name: Lint license headers
+        run: scripts/lint.sh headers
+
   workspace:
     name: Workspace lint (clang-tidy + pyright)
     runs-on: ubuntu-latest

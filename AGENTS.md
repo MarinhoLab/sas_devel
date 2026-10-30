@@ -173,6 +173,8 @@ scripts/lint.sh types  # pyright — full results need a built workspace
 scripts/lint.sh cpp    # clang-tidy — needs the colcon compile database
 scripts/lint.sh ros2   # tools/murilos_ros2_linter.py: spin template, ROS
                        # naming, package.xml vs imports/entry-points
+scripts/lint.sh headers # tools/license_header_check.py: Copyright notice in
+                       # every first-party source (vendored trees exempt)
 scripts/lint.sh all
 ```
 

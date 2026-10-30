@@ -83,4 +83,5 @@ Videos only render on the website or GitHub, not in these doxygen docs.
 ## Acknowledgements
 
 Parts of this codebase were developed with an AI coding agent: a local
-Qwen 3.8 Flash Next using OpenCode.
+Qwen 3.8 Flash Next using OpenCode. Some repositories may also have used
+Claude (Anthropic) as a co-pilot.

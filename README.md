@@ -80,3 +80,7 @@ Videos only render on the website or GitHub, not in these doxygen docs.
 
 - `PPA` and `docker`: https://github.com/SmartArmStack/smart_arm_stack_ROS2
 - website devel: https://github.com/SmartArmStack/SmartArmStack.github.io
+## Acknowledgements
+
+Parts of this codebase were developed with an AI coding agent: a local
+Qwen 3.8 Flash Next using OpenCode.

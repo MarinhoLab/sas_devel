@@ -117,18 +117,15 @@ jobs:
           source install/setup.bash
           colcon test --packages-select sas_common sas_robot_driver \
             sas_datalogger sas_force_sensor sas_force_sensor_bota
-          colcon test-result --verbose
-          # colcon test-result exits 0 when it finds no junit files at all,
-          # so a deleted/renamed suite would pass vacuously; require that
-          # every package in the gate actually produced results. (Both
-          # locations matter: ament_cmake writes under build/<pkg>, the
-          # ament_python bota package runs pytest from its source dir.)
-          for p in sas_common sas_robot_driver sas_datalogger \
-                   sas_force_sensor sas_force_sensor_bota; do
-            colcon test-result --base-paths "build/$p" "src/$p" 2>/dev/null |
-              grep -q "Summary: [1-9]" || {
-                echo "::error::no test results produced by $p"; exit 1; }
-          done
+          # colcon test-result exits 0 when it finds no junit files at
+          # all (ament_python writes them under src/, ament_cmake under
+          # build/), so a deleted/renamed suite would pass vacuously; pin
+          # the gate to the known-good collected-test floor (30 as of
+          # 2026-10) so shrinking the suite below that fails the step.
+          colcon test-result --verbose | tee /tmp/test_summary.txt
+          grep -qE "Summary: ([3-9][0-9]|[0-9]{3,}) tests" \
+            /tmp/test_summary.txt || {
+              echo "::error::expected at least 30 collected tests"; exit 1; }
 
       - name: Lint C++ (clang-tidy)
         env:

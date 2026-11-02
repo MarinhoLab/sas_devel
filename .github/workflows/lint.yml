@@ -48,7 +48,7 @@ jobs:
           sudo apt-get update
           # nodejs: the pip pyright needs a node runtime; the distro one
           # avoids nodeenv trying to download node at run time.
-          sudo apt-get install -y clang-tidy nodejs
+          sudo apt-get install -y clang-tidy nodejs libasan8 libubsan1
           # bota-driver/dqrobotics/pyqtdarktheme: the PyPI dependencies the
           # packages declare in their requirements.txt (no rosdep keys; the
           # C++ dqrobotics comes from the SmartArmStack PPA as
@@ -129,6 +129,44 @@ jobs:
           grep -qE "Summary: ([2-9][0-9]|[0-9]{3,}) tests" \
             /tmp/test_summary.txt || {
               echo "::error::expected at least 22 collected tests"; exit 1; }
+
+      # Second test pass against an ASan+UBSan instrumented build (separate
+      # build/install spaces so the Release build above stays the fast gate
+      # and the compile database for clang-tidy is untouched). Leak checks
+      # stay on; UBSan halts on the first finding so a report fails the
+      # test binary instead of only printing it.
+      - name: Test workspace (ASan + UBSan)
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          cd /tmp/sas_devel/ros2_ws
+          source install/setup.bash
+          colcon build --build-base build_san --install-base install_san \
+            --packages-select sas_common sas_robot_driver \
+              sas_datalogger sas_force_sensor sas_force_sensor_bota \
+            --cmake-args -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -O1 -g" \
+              -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined" \
+              -DCMAKE_SHARED_LINKER_FLAGS="-fsanitize=address,undefined"
+          source install_san/setup.bash
+          ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 \
+            colcon test --build-base build_san \
+              --packages-select sas_common sas_robot_driver \
+                sas_datalogger sas_force_sensor sas_force_sensor_bota
+          # The default test-result base is build/, which only holds the
+          # plain (already-gated) pass — the sanitized junits live under
+          # build_san/, so they need their own --test-result-base. The
+          # ament_python (bota) junit lands under src/ regardless, so the
+          # default-base run is kept to catch its (pure-python) failures.
+          # colcon test-result exits 0 on zero files, hence the floors.
+          colcon test-result --verbose | tee /tmp/test_summary_san.txt
+          colcon test-result --test-result-base build_san --verbose \
+            | tee /tmp/test_summary_san_cmake.txt
+          grep -qE "Summary: ([2-9][0-9]|[0-9]{3,}) tests" \
+            /tmp/test_summary_san.txt || {
+              echo "::error::expected at least 22 collected tests (sanitized)"; exit 1; }
+          grep -qE "Summary: ([1-9][0-9]|[0-9]{3,}) tests" \
+            /tmp/test_summary_san_cmake.txt || {
+              echo "::error::sanitized build collected no C++ test results"; exit 1; }
 
       - name: Lint C++ (clang-tidy)
         env:

@@ -6,7 +6,7 @@
 #
 # Usage:
 #   scripts/lint.sh [MODE]
-#     MODE: all (default) | cpp | py | types | ros2 | headers
+#     MODE: all (default) | cpp | py | types | ros2 | headers | fmt | fmt-fix
 #       cpp   clang-tidy over the C++ sources in the compile database
 #       py    ruff (style + bugbear; import-resolution independent)
 #       types pyright. Full results need the compiled pybind11 bindings and
@@ -20,6 +20,9 @@
 #             packages then count as declared dependencies.
 #       headers tools/license_header_check.py: every first-party source
 #             file must carry a Copyright notice (vendored trees exempt).
+#       fmt   clang-format --dry-run -Werror over the first-party C++ tree
+#             (.clang-format at the root; pinned version, see header).
+#       fmt-fix  same, but rewrites the files in place.
 #
 # C++ linting needs a colcon compile database. Generate one with:
 #   colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -35,6 +38,8 @@
 #   COMPILE_DB   directory holding compile_commands.json (default: <ROOT>/build)
 #   PARALLEL     clang-tidy job count       (default: number of CPUs)
 #   ROS2_LINTER  murilos_ros2_linter.py path (default: <ROOT>/tools/)
+#   CLANG_FORMAT clang-format binary     (default: clang-format, brew llvm fallback)
+#                CI pins pip clang-format==23.1.5 — keep the version matched.
 #
 # Exit codes:
 #   0  no findings
@@ -50,7 +55,7 @@ FAIL=0
 
 die() { echo "ERROR: $*" >&2; exit 2; }
 
-case "$MODE" in all|cpp|py|types|ros2|headers) ;; *) die "unknown MODE '$MODE' (use: all|cpp|py|types|ros2|headers)";; esac
+case "$MODE" in all|cpp|py|types|ros2|headers|fmt|fmt-fix) ;; *) die "unknown MODE '$MODE' (use: all|cpp|py|types|ros2|headers|fmt|fmt-fix)";; esac
 
 nproc_or() {
     command -v nproc >/dev/null 2>&1 && { nproc; return; }
@@ -67,6 +72,28 @@ find_clang_tidy() {
         [ -x "$c" ] && { echo "$c"; return; }
     done
     return 1
+}
+
+# Find clang-format: env override, PATH, then Homebrew LLVM (macOS).
+find_clang_format() {
+    [ -n "${CLANG_FORMAT:-}" ] && { echo "$CLANG_FORMAT"; return; }
+    command -v clang-format >/dev/null 2>&1 && { command -v clang-format; return; }
+    for c in /opt/homebrew/opt/llvm/bin/clang-format \
+             /usr/local/opt/llvm/bin/clang-format \
+             /usr/bin/clang-format-18 /usr/bin/clang-format-17; do
+        [ -x "$c" ] && { echo "$c"; return; }
+    done
+    return 1
+}
+
+# First-party C++ sources: prune vendored/embedded trees and build artifacts.
+first_party_cpp_sources() {
+    find "$ROOT/src" "$ROOT/sas_cpp" \
+        \( -name .git -o -name pybind11 -o -name Universal_Robots_Client_Library \
+           -o -name third_party -o -name vendor -o -name .devcontainer \
+           -o -name build -o -name install -o -name log \) -prune -o \
+        \( -name '*.cpp' -o -name '*.cc' -o -name '*.cxx' \
+           -o -name '*.h' -o -name '*.hpp' -o -name '*.hh' -o -name '*.hxx' \) -print 2>/dev/null
 }
 
 # Prefer a direct binary, fall back to "uvx <tool>" (no global install).
@@ -191,6 +218,28 @@ lint_ros2() {
     python3 "$linter" "$ROOT/src" || FAIL=1
 }
 
+lint_fmt() {
+    local fix="$1" fmt sources f bad=0 n=0
+    fmt="$(find_clang_format)" || die "clang-format not found (pip install clang-format==23.1.5 or set CLANG_FORMAT=)"
+    sources="$(first_party_cpp_sources)"
+    [ -n "$sources" ] || die "no first-party C++ sources found under $ROOT/src"
+    echo "=== clang-format ($fmt) ==="
+    while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        n=$((n + 1))
+        if ! $fmt --style="file:$ROOT/.clang-format" --dry-run --Werror "$f" >/dev/null 2>&1; then
+            if [ "$fix" = "fix" ]; then
+                $fmt -i --style="file:$ROOT/.clang-format" "$f" && echo "formatted ${f#"$ROOT"/}"
+            else
+                echo "needs formatting: ${f#"$ROOT"/}"
+                bad=$((bad + 1))
+            fi
+        fi
+    done <<< "$sources"
+    echo "=== clang-format: $n file(s) checked, $bad need formatting ==="
+    [ "$bad" -eq 0 ] || FAIL=1
+}
+
 lint_headers() {
     local checker="$ROOT/tools/license_header_check.py"
     [ -f "$checker" ] || die "license_header_check.py not found at $checker"
@@ -205,6 +254,8 @@ case "$MODE" in
     types) lint_types ;;
     ros2)    lint_ros2 ;;
     headers) lint_headers ;;
-    all)   lint_cpp; lint_py; lint_types; lint_ros2; lint_headers ;;
+    fmt)     lint_fmt "" ;;
+    fmt-fix) lint_fmt fix ;;
+    all)   lint_cpp; lint_py; lint_types; lint_ros2; lint_headers; lint_fmt "" ;;
 esac
 exit "$FAIL"

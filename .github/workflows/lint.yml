@@ -18,8 +18,16 @@ jobs:
       - name: Install ruff
         run: pipx install ruff
 
+      # Version must match the host/pip pin in scripts/lint.sh's header so
+      # fmt-fix locally and the CI check agree byte-for-byte.
+      - name: Install clang-format
+        run: pipx install clang-format==23.1.5
+
       - name: Lint
         run: scripts/lint.sh py
+
+      - name: Lint C++ format
+        run: scripts/lint.sh fmt
 
       - name: Lint license headers
         run: scripts/lint.sh headers

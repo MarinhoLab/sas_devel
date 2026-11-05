@@ -1,0 +1,21 @@
+# SAS C++ style. Enforced by scripts/lint.sh fmt (CI: superproject Lint job).
+# Identity = the house style the tree already follows: 4-space indent, Allman
+# braces, braceless single-statement ifs, members with trailing _; the
+# formatter only removes drift (spacing, ref/pointer alignment, column
+# ceiling). Pinned to clang-format 23.1.5 (pip wheel) — re-run fmt-fix with
+# the same version when bumping.
+BasedOnStyle: Google
+ColumnLimit: 120
+IndentWidth: 4
+TabWidth: 4
+AccessModifierOffset: -4
+BreakBeforeBraces: Allman
+PointerAlignment: Left
+ReferenceAlignment: Left
+NamespaceIndentation: None
+IncludeBlocks: Preserve
+SortIncludes: false
+ReflowComments: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline

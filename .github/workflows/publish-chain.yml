@@ -4,8 +4,10 @@ name: Publish chain
 # the real workflow in its home repository via workflow_dispatch and blocks
 # until it finishes, failing the chain on any non-success conclusion:
 #   deb builder -> docker -> noncommercial deb builder -> sas-full
-# Needs a fine-grained PAT (Actions: read+write, Contents: read) on the
-# three target repositories stored as the repo secret RELEASE_PAT.
+# Needs one fine-grained PAT per org (Actions: read+write, Contents: read),
+# stored as repo secrets: RELEASE_PAT_SMARTARMSTACK for
+# SmartArmStack/smart_arm_stack_ROS2 and RELEASE_PAT_MARINHOLAB for
+# MarinhoLab/sas_debian_builder_noncommercial and MarinhoLab/sas-full.
 
 on:
   workflow_dispatch:
@@ -46,7 +48,7 @@ jobs:
           repo: SmartArmStack/smart_arm_stack_ROS2
           workflow: sas_debian_builder.yml
           dry_run: ${{ inputs.dry_run }}
-          token: ${{ secrets.RELEASE_PAT }}
+          token: ${{ secrets.RELEASE_PAT_SMARTARMSTACK }}
 
   docker:
     needs: deb
@@ -60,7 +62,7 @@ jobs:
           repo: SmartArmStack/smart_arm_stack_ROS2
           workflow: docker_build_and_publish.yml
           dry_run: ${{ inputs.dry_run }}
-          token: ${{ secrets.RELEASE_PAT }}
+          token: ${{ secrets.RELEASE_PAT_SMARTARMSTACK }}
 
   noncommercial:
     needs: docker
@@ -74,7 +76,7 @@ jobs:
           repo: MarinhoLab/sas_debian_builder_noncommercial
           workflow: sas_debian_builder.yml
           dry_run: ${{ inputs.dry_run }}
-          token: ${{ secrets.RELEASE_PAT }}
+          token: ${{ secrets.RELEASE_PAT_MARINHOLAB }}
 
   sas_full:
     needs: noncommercial
@@ -88,4 +90,4 @@ jobs:
           repo: MarinhoLab/sas-full
           workflow: jazzy.yml
           dry_run: ${{ inputs.dry_run }}
-          token: ${{ secrets.RELEASE_PAT }}
+          token: ${{ secrets.RELEASE_PAT_MARINHOLAB }}

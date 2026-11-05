@@ -8,7 +8,7 @@ api="repos/${GITHUB_REPOSITORY}/actions/workflows/${TARGET_WORKFLOW}/runs?head_s
 
 run_id=""
 for _ in $(seq 1 60); do
-    run_id="$(gh api "$api" --jq '.workflow_runs[0].databaseId // ""')"
+    run_id="$(gh api "$api" --jq '.workflow_runs[0].id // ""')"
     [ -n "$run_id" ] && break
     sleep 10
 done

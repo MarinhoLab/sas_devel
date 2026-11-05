@@ -1,0 +1,27 @@
+name: Watch upstream workflow
+description: Trigger a workflow_dispatch run in another repository and block until it succeeds.
+inputs:
+  repo:
+    description: owner/name of the target repository
+    required: true
+  workflow:
+    description: Workflow file name or display name in the target repository
+    required: true
+  dry_run:
+    description: Only verify the token and workflow, do not trigger
+    required: true
+    default: "false"
+  token:
+    description: PAT with Actions read+write on the target repository
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Trigger and watch
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        TARGET_REPO: ${{ inputs.repo }}
+        TARGET_WORKFLOW: ${{ inputs.workflow }}
+        DRY_RUN: ${{ inputs.dry_run }}
+      run: bash "${{ github.action_path }}/watch_workflow.sh"

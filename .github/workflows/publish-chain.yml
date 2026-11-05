@@ -1,0 +1,91 @@
+name: Publish chain
+
+# Umbrella orchestrator for the SAS publishing pipeline. Each step triggers
+# the real workflow in its home repository via workflow_dispatch and blocks
+# until it finishes, failing the chain on any non-success conclusion:
+#   deb builder -> docker -> noncommercial deb builder -> sas-full
+# Needs a fine-grained PAT (Actions: read+write, Contents: read) on the
+# three target repositories stored as the repo secret RELEASE_PAT.
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_deb:
+        description: Run the sas deb builder (smart_arm_stack_ROS2)
+        type: boolean
+        default: true
+      run_docker:
+        description: Run the docker publish (smart_arm_stack_ROS2)
+        type: boolean
+        default: true
+      run_noncommercial:
+        description: Run the noncommercial deb builder (sas_debian_builder_noncommercial)
+        type: boolean
+        default: true
+      run_sas_full:
+        description: Run the sas-full image build (sas-full)
+        type: boolean
+        default: true
+      dry_run:
+        description: Verify PAT and workflows without triggering anything
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  deb:
+    if: inputs.run_deb
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/watch-workflow
+        with:
+          repo: SmartArmStack/smart_arm_stack_ROS2
+          workflow: sas_debian_builder.yml
+          dry_run: ${{ inputs.dry_run }}
+          token: ${{ secrets.RELEASE_PAT }}
+
+  docker:
+    needs: deb
+    if: inputs.run_docker && (needs.deb.result == 'success' || needs.deb.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/watch-workflow
+        with:
+          repo: SmartArmStack/smart_arm_stack_ROS2
+          workflow: docker_build_and_publish.yml
+          dry_run: ${{ inputs.dry_run }}
+          token: ${{ secrets.RELEASE_PAT }}
+
+  noncommercial:
+    needs: docker
+    if: inputs.run_noncommercial && (needs.docker.result == 'success' || needs.docker.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/watch-workflow
+        with:
+          repo: MarinhoLab/sas_debian_builder_noncommercial
+          workflow: sas_debian_builder.yml
+          dry_run: ${{ inputs.dry_run }}
+          token: ${{ secrets.RELEASE_PAT }}
+
+  sas_full:
+    needs: noncommercial
+    if: inputs.run_sas_full && (needs.noncommercial.result == 'success' || needs.noncommercial.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/watch-workflow
+        with:
+          repo: MarinhoLab/sas-full
+          workflow: jazzy.yml
+          dry_run: ${{ inputs.dry_run }}
+          token: ${{ secrets.RELEASE_PAT }}

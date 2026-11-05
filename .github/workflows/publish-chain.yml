@@ -36,6 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
+      - name: Show dispatched inputs
+        run: echo "inputs = ${{ toJSON(inputs) }}"
       - uses: actions/checkout@v4
       - uses: ./.github/actions/wait-for-workflow
         with:

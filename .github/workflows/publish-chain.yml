@@ -3,7 +3,8 @@ name: Publish chain
 # Umbrella orchestrator for the SAS publishing pipeline. Each step triggers
 # the real workflow in its home repository via workflow_dispatch and blocks
 # until it finishes, failing the chain on any non-success conclusion:
-#   deb builder -> docker -> noncommercial deb builder -> sas-full
+#   Lint + Build (this repo, same commit) -> deb builder -> docker ->
+#   noncommercial deb builder -> sas-full
 # Needs one fine-grained PAT per org (Actions: read+write, Contents: read),
 # stored as repo secrets: RELEASE_PAT_SMARTARMSTACK for
 # SmartArmStack/smart_arm_stack_ROS2 and RELEASE_PAT_MARINHOLAB for
@@ -37,7 +38,28 @@ permissions:
   contents: read
 
 jobs:
+  gate_lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/wait-for-workflow
+        with:
+          workflow: lint.yml
+          sha: ${{ github.sha }}
+
+  gate_build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/wait-for-workflow
+        with:
+          workflow: sas-build-and-test.yml
+          sha: ${{ github.sha }}
+
   deb:
+    needs: [gate_lint, gate_build]
     if: inputs.run_deb
     runs-on: ubuntu-latest
     timeout-minutes: 120

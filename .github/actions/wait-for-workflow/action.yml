@@ -1,0 +1,19 @@
+name: Wait for own workflow
+description: Wait for a workflow run of this repository at a given commit to complete successfully.
+inputs:
+  workflow:
+    description: Workflow file name of this repository to wait for
+    required: true
+  sha:
+    description: Commit SHA whose run must succeed
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Wait and check
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TARGET_WORKFLOW: ${{ inputs.workflow }}
+        TARGET_SHA: ${{ inputs.sha }}
+      run: bash "${{ github.action_path }}/wait_workflow.sh"

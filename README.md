@@ -76,6 +76,15 @@ Videos only render on the website or GitHub, not in these doxygen docs.
 - `ros`: https://github.com/marinholab/ros
 - `gazebo`: https://github.com/marinholab/gazebo
 
+## Actions
+
+Manually triggered (workflow dispatch) publishing actions, in build order:
+
+- `deb` builder (sas debs to the GitHub Release and PPA): https://github.com/SmartArmStack/smart_arm_stack_ROS2/actions/workflows/sas_debian_builder.yml
+- `docker` image (`murilomarinho/sas`, runs after the deb builder): https://github.com/SmartArmStack/smart_arm_stack_ROS2/actions/workflows/docker_build_and_publish.yml
+- `noncommercial` deb builder (CC BY-NC packages to https://marinholab.github.io/sas_debian_builder_noncommercial/): https://github.com/MarinhoLab/sas_debian_builder_noncommercial/actions/workflows/sas_debian_builder.yml
+- `sas-full` noncommercial image (`ghcr.io/marinholab/sas-full`): https://github.com/MarinhoLab/sas-full/actions/workflows/jazzy.yml
+
 ## Developer links
 
 - `PPA` and `docker`: https://github.com/SmartArmStack/smart_arm_stack_ROS2

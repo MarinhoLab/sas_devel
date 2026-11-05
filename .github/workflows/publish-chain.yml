@@ -70,7 +70,7 @@ jobs:
 
   docker:
     needs: deb
-    if: (inputs.mode == 'full' || inputs.mode == 'docker') && (needs.deb.result == 'success' || needs.deb.result == 'skipped')
+    if: ${{ !cancelled() && (inputs.mode == 'full' || inputs.mode == 'docker') && (needs.deb.result == 'success' || needs.deb.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -84,7 +84,7 @@ jobs:
 
   noncommercial:
     needs: docker
-    if: (inputs.mode == 'full' || inputs.mode == 'noncommercial-and-images') && (needs.docker.result == 'success' || needs.docker.result == 'skipped')
+    if: ${{ !cancelled() && (inputs.mode == 'full' || inputs.mode == 'noncommercial-and-images') && (needs.docker.result == 'success' || needs.docker.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -98,7 +98,7 @@ jobs:
 
   sas_full:
     needs: noncommercial
-    if: (inputs.mode == 'full' || inputs.mode == 'noncommercial-and-images' || inputs.mode == 'images') && (needs.noncommercial.result == 'success' || needs.noncommercial.result == 'skipped')
+    if: ${{ !cancelled() && (inputs.mode == 'full' || inputs.mode == 'noncommercial-and-images' || inputs.mode == 'images') && (needs.noncommercial.result == 'success' || needs.noncommercial.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:

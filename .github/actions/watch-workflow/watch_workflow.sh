@@ -23,8 +23,11 @@ fi
 before="$(gh run list -R "$TARGET_REPO" --workflow "$TARGET_WORKFLOW" --limit 1 \
     --json databaseId --jq '.[0].databaseId // 0')"
 
-gh workflow run "$TARGET_WORKFLOW" -R "$TARGET_REPO"
-echo "dispatched ${TARGET_WORKFLOW} in ${TARGET_REPO} (previous latest run ${before})"
+# Pure REST (gh workflow run resolves the default branch via GraphQL, which
+# fine-grained PATs without Contents/metadata access cannot call).
+ref="$(gh api "repos/${TARGET_REPO}" -q .default_branch)"
+gh api -X POST "repos/${TARGET_REPO}/actions/workflows/${TARGET_WORKFLOW}/dispatches" -f ref="$ref"
+echo "dispatched ${TARGET_WORKFLOW} in ${TARGET_REPO} on ${ref} (previous latest run ${before})"
 
 run_id=""
 for _ in $(seq 1 60); do

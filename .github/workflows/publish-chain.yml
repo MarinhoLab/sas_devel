@@ -13,22 +13,16 @@ name: Publish chain
 on:
   workflow_dispatch:
     inputs:
-      run_deb:
-        description: Run the sas deb builder (smart_arm_stack_ROS2)
-        type: boolean
-        default: true
-      run_docker:
-        description: Run the docker publish (smart_arm_stack_ROS2)
-        type: boolean
-        default: true
-      run_noncommercial:
-        description: Run the noncommercial deb builder (sas_debian_builder_noncommercial)
-        type: boolean
-        default: true
-      run_sas_full:
-        description: Run the sas-full image build (sas-full)
-        type: boolean
-        default: true
+      mode:
+        description: Which steps of the chain to run
+        type: choice
+        options:
+          - full
+          - deb
+          - docker
+          - noncommercial-and-images
+          - images
+        default: full
       dry_run:
         description: Verify PAT and workflows without triggering anything
         type: boolean
@@ -60,7 +54,7 @@ jobs:
 
   deb:
     needs: [gate_lint, gate_build]
-    if: inputs.run_deb
+    if: inputs.mode == 'full' || inputs.mode == 'deb'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -74,7 +68,7 @@ jobs:
 
   docker:
     needs: deb
-    if: inputs.run_docker && (needs.deb.result == 'success' || needs.deb.result == 'skipped')
+    if: (inputs.mode == 'full' || inputs.mode == 'docker') && (needs.deb.result == 'success' || needs.deb.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -88,7 +82,7 @@ jobs:
 
   noncommercial:
     needs: docker
-    if: inputs.run_noncommercial && (needs.docker.result == 'success' || needs.docker.result == 'skipped')
+    if: (inputs.mode == 'full' || inputs.mode == 'noncommercial-and-images') && (needs.docker.result == 'success' || needs.docker.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -102,7 +96,7 @@ jobs:
 
   sas_full:
     needs: noncommercial
-    if: inputs.run_sas_full && (needs.noncommercial.result == 'success' || needs.noncommercial.result == 'skipped')
+    if: (inputs.mode == 'full' || inputs.mode == 'noncommercial-and-images' || inputs.mode == 'images') && (needs.noncommercial.result == 'success' || needs.noncommercial.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:

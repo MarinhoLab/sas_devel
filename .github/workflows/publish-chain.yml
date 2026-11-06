@@ -107,6 +107,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
+      # GitHub Pages deploys lag the deb publish: the image build's apt-get
+      # update can catch a stale Packages index listing debs that no longer
+      # exist (404). Wait until every listed deb is actually fetchable.
+      - name: Wait for the noncommercial Pages repo to settle
+        run: |
+          base=https://marinholab.github.io/sas_debian_builder_noncommercial/
+          for _ in $(seq 1 30); do
+              missing=0; total=0
+              files="$(curl -fsS "${base}./Packages" | awk '/^Filename: / {print $2}')"
+              for f in $files; do
+                  total=$((total + 1))
+                  code="$(curl -s -o /dev/null -w '%{http_code}' -I "${base}${f}")"
+                  [ "$code" = "200" ] || missing=$((missing + 1))
+              done
+              if [ "$total" -gt 0 ] && [ "$missing" -eq 0 ]; then
+                  echo "all $total noncommercial debs are available"
+                  exit 0
+              fi
+              echo "$missing/$total debs missing, retrying in 30s"
+              sleep 30
+          done
+          echo "::error::noncommercial Pages repo did not settle within 15 minutes"
+          exit 1
+
       - uses: actions/checkout@v4
       - uses: ./.github/actions/watch-workflow
         with:

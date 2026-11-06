@@ -67,6 +67,9 @@ jobs:
           # scipy: needed by the sas_datalogger tests (loadmat round-trip);
           # rosdep skips python3-scipy (universe package, see below).
           sudo pip install scipy --break-system-packages
+          # GUI deps: without them pyright types gui.py modules as Any and
+          # their real type errors go unchecked (reportMissingImports only).
+          sudo pip install PyQt6 pyqtgraph ninja --break-system-packages
 
       # Mirror docker/Dockerfile so the packages actually compile
       # (clang-tidy needs a real compile database and pyright the built

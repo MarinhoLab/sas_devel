@@ -31,6 +31,11 @@ on:
 permissions:
   contents: read
 
+# One chain at a time; a second dispatch queues behind the first.
+concurrency:
+  group: publish-chain
+  cancel-in-progress: false
+
 jobs:
   gate_lint:
     runs-on: ubuntu-latest

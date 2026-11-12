@@ -50,6 +50,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          # sas_cpp/tools/version.sh stamps the deb version with
+          # `git rev-list HEAD --count`; the default depth-1 fetch would
+          # pin every build to NN=0001.
+          fetch-depth: 0
 
       - name: Install lint tools
         run: |
@@ -78,10 +82,17 @@ jobs:
         run: |
           sudo apt-get install -y dh-make devscripts git
           mkdir -p /tmp/sas_devel/ros2_ws
+          # cp -a moves the submodule working trees but their .git files resolve
+          # gitdir relative to the NEW location (../.git/modules/<name>), so the
+          # submodule gitdirs must be relocated alongside them or git fails with
+          # "not a git repository" in version.sh / setuptools-git-versioning.
+          mkdir -p /tmp/sas_devel/.git/modules
+          cp -a .git/modules/sas_cpp /tmp/sas_devel/.git/modules/sas_cpp
+          cp -a .git/modules/sas_py /tmp/sas_devel/.git/modules/sas_py
           cp -a sas_cpp /tmp/sas_devel/sas_cpp
           cd /tmp/sas_devel/sas_cpp
-          # cp -a keeps the runner-user uid and the submodule .git file still
-          # points at the /__w checkout; git flags both as foreign-owned here.
+          # cp -a keeps the runner-user uid; the relocated gitdir counts as
+          # foreign-owned, so silence the ownership check here too.
           git config --global --add safe.directory '*'
           bash tools/bump-changelog.sh
           dpkg-buildpackage -us -uc -b

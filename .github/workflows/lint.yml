@@ -76,7 +76,7 @@ jobs:
       # pybind11 bindings).
       - name: Install sas_cpp (deb) and sas_py (pip)
         run: |
-          sudo apt-get install -y dh-make devscripts
+          sudo apt-get install -y dh-make devscripts git
           mkdir -p /tmp/sas_devel/ros2_ws
           cp -a sas_cpp /tmp/sas_devel/sas_cpp
           cd /tmp/sas_devel/sas_cpp

@@ -80,6 +80,9 @@ jobs:
           mkdir -p /tmp/sas_devel/ros2_ws
           cp -a sas_cpp /tmp/sas_devel/sas_cpp
           cd /tmp/sas_devel/sas_cpp
+          # cp -a keeps the runner-user uid and the submodule .git file still
+          # points at the /__w checkout; git flags both as foreign-owned here.
+          git config --global --add safe.directory '*'
           bash tools/bump-changelog.sh
           dpkg-buildpackage -us -uc -b
           cd ..

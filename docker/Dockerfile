@@ -7,6 +7,11 @@ RUN sudo apt-get update && sudo apt-get upgrade -y
 RUN sudo apt-get install -y dh-make devscripts
 
 # install sas_cpp as a .deb
+# The context ships no .git (Dockerfile.dockerignore), so version.sh takes
+# the commit count from this build arg (see compose.yml; default stamps a
+# placeholder - only the deb builder publishes real versions).
+ARG SAS_CPP_NN=0
+ENV SAS_CPP_NN=${SAS_CPP_NN}
 RUN mkdir -p /root/sas_devel/ros2_ws
 COPY sas_cpp /root/sas_devel/sas_cpp
 WORKDIR /root/sas_devel/sas_cpp

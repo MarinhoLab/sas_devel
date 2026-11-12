@@ -3,6 +3,10 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+      args:
+        # `SAS_CPP_NN=$(git -C sas_cpp rev-list --count HEAD) docker compose build`
+        # for a realistically stamped test deb; the CI default stamps a placeholder.
+        SAS_CPP_NN: ${SAS_CPP_NN:-0}
     command: /bin/bash -c "
       cd /root/sas_devel/ros2_ws
       && ls .
